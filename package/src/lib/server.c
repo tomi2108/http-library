@@ -6,8 +6,7 @@ HttpServer *server_init() {
 }
 
 void server_endpoint(HttpServer *server, Method method, const char *path,
-                     void (*callback)()) {
-  callback();
+                     Handler handler) {
 }
 
 int server_listen(HttpServer *server, char *port, void (*callback)()) {
