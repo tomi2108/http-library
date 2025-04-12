@@ -1,10 +1,11 @@
-#include "../include/request.h"
-#include <stdlib.h>
+#include "request.h"
 
 void request_parse(Request *req) {
   // parse buffer and initialize request
   req->method = GET;
 }
+
+void request_send(Request *req, char *path) {}
 
 Request *request_create() {
   Request *request = malloc(sizeof(Request));

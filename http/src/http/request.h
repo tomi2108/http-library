@@ -10,6 +10,8 @@ typedef struct Request {
   Method method;
 } Request;
 
+Request *request_create();
 Request *request_recieve(int socket);
+void request_send(Request *req, char *path);
 
 #endif

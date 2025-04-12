@@ -1,4 +1,4 @@
-#include "../include/response.h"
+#include "response.h"
 
 void response_send(Response *res, int socket) {}
 

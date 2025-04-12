@@ -24,7 +24,7 @@ typedef struct HttpServer {
   Endpoint *endpoints;
 } HttpServer;
 
-HttpServer *server_init();
+HttpServer *server_create();
 int server_listen(HttpServer *server, char *port, void (*callback)());
 void server_endpoint(HttpServer *server, Method method, const char *path,
                      Handler handler);

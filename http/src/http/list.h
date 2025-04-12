@@ -3,6 +3,7 @@
 
 #include "node.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 /**
  * @struct t_list

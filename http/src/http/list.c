@@ -1,6 +1,4 @@
-#include <stdlib.h>
-
-#include "../include/list.h"
+#include "list.h"
 
 static t_link_element *list_create_element(void *data);
 static void list_destroy_element(t_link_element *element);
@@ -26,6 +24,9 @@ static void *list_iterator_fold(t_list_iterator *iterator, void *seed,
 
 t_list *list_create() {
   t_list *list = malloc(sizeof(t_list));
+  if (list == NULL)
+    return NULL;
+
   list->head = NULL;
   list->elements_count = 0;
   return list;

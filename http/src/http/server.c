@@ -1,13 +1,12 @@
-#include "../include/server.h"
+#include "server.h"
 
-HttpServer *server_init() {
+HttpServer *server_create() {
   HttpServer *server = malloc(sizeof(HttpServer));
   return server;
 }
 
 void server_endpoint(HttpServer *server, Method method, const char *path,
-                     Handler handler) {
-}
+                     Handler handler) {}
 
 int server_listen(HttpServer *server, char *port, void (*callback)()) {
   // consider moving to server_init && HttpServer struct
