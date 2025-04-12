@@ -25,6 +25,8 @@ void server_message() {
 
 int main(int argc, char *argv[]) {
   HttpServer *server = server_create();
+
+  server_endpoint(server, GET, "/hello", &hello_world_handler);
   server_listen(server, PORT, &server_message);
 
   return EXIT_SUCCESS;
