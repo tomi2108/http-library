@@ -7,9 +7,9 @@ HttpClient *client_create() {
   return client;
 }
 
-Response *client_send(HttpClient *client, Method method, char *path) {
+Response *client_send(HttpClient *client, char method[8], char *path) {
   Request *req = request_create();
-  req->method = method;
+  // req->method = method;
   request_send(req, path);
   // should open the connection first...
   //

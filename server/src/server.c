@@ -1,7 +1,7 @@
 #include <http/server.h>
 #include <stdio.h>
 
-char *PORT = "3000";
+char *PORT = "8080";
 
 void hello_world_handler(Request *req, Response *res) {
   printf("Hello world");
@@ -19,7 +19,7 @@ void hello_world_handler(Request *req, Response *res) {
 }
 
 void server_message() {
-  printf("Server listening on port %s...", PORT);
+  printf("Server listening on port %s...\n", PORT);
   fflush(stdout);
 }
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   HttpServer *server = server_create();
 
   server_endpoint(server, GET, "/hello", &hello_world_handler);
-  server_listen(server, PORT, &server_message);
+   server_listen(server, PORT, &server_message);
 
   return EXIT_SUCCESS;
 }

@@ -7,7 +7,8 @@
 
 typedef struct Request {
   t_buffer *buffer;
-  Method method;
+  char method[8];
+  char path[1024];
 } Request;
 
 Request *request_create();

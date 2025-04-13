@@ -1,8 +1,15 @@
 #include "request.h"
+#include "buffer.h"
+#include <stdint.h>
+#include <string.h>
+#include <unistd.h>
 
 void request_parse(Request *req) {
-  // parse buffer and initialize request
-  req->method = GET;
+  char *stream = req->buffer->stream;
+
+  char *line = strtok(stream, "\r\n");
+  char version[16];
+  sscanf(line, "%7s %1023s %15s", req->method, req->path, version);
 }
 
 void request_send(Request *req, char *path) {}
@@ -18,15 +25,11 @@ Request *request_create() {
 
 Request *request_recieve(int socket) {
   Request *request = request_create();
-  int req_size = 1;
 
-  request->buffer->stream = malloc(req_size);
-  if (request->buffer->stream == NULL)
-    return NULL;
-
-  int err_stream = recv(socket, request->buffer->stream, req_size, MSG_WAITALL);
-  if (err_stream == 0)
-    return NULL;
+  char stream[1024] = {0};
+  int recieved = read(socket, stream, 1000);
+  stream[recieved] = 0;
+  buffer_add_string(request->buffer, recieved, stream);
 
   request_parse(request);
   return request;

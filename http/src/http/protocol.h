@@ -7,7 +7,7 @@ typedef enum Method {
   PUT,
   DELETE,
   PATCH,
-  OPTION,
+  OPTIONS,
   HEAD,
 } Method;
 

@@ -1,4 +1,5 @@
 #include "server.h"
+#include <stdio.h>
 
 HttpServer *server_create() {
   HttpServer *server = malloc(sizeof(HttpServer));
@@ -41,7 +42,11 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
     int client_socket = accept(fd_socket, NULL, NULL);
     if (client_socket == -1)
       continue;
+
     Request *req = request_recieve(client_socket);
+
+    printf("%s %s\n", req->method, req->path);
+    fflush(stdout);
 
     // TODO: exec corresponding callback
     close(client_socket);

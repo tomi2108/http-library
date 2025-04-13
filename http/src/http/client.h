@@ -16,6 +16,6 @@ typedef struct HttpClient {
 } HttpClient;
 
 HttpClient *client_create();
-Response *client_send(HttpClient* client, Method method, char *path);
+Response *client_send(HttpClient *client, char method[8], char *path);
 
 #endif
