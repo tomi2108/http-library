@@ -12,7 +12,7 @@ void request_parse(Request *req) {
   sscanf(line, "%7s %1023s %15s", req->method, req->path, version);
 }
 
-void request_send(Request *req, char *path) {}
+void request_send(Request *req, Path path) {}
 
 Request *request_create() {
   Request *request = malloc(sizeof(Request));

@@ -1,13 +1,33 @@
 #include "server.h"
-#include <stdio.h>
+#include "list.h"
+#include "protocol.h"
+#include <stdlib.h>
+#include <string.h>
 
 HttpServer *server_create() {
   HttpServer *server = malloc(sizeof(HttpServer));
+  if (server == NULL)
+    return NULL;
+
+  server->endpoints = list_create();
   return server;
 }
 
-void server_endpoint(HttpServer *server, Method method, const char *path,
-                     Handler handler) {}
+void server_endpoint(HttpServer *server, Method method, Path path,
+                     Handler handler) {
+  Endpoint *endpoint = malloc(sizeof(Endpoint));
+  if (endpoint == NULL)
+    return;
+
+  memset(endpoint->path, 0, sizeof(Path));
+  memset(endpoint->method, 0, sizeof(Method));
+
+  memccpy(endpoint->method, method, 1, strlen(method));
+  memccpy(endpoint->path, path, 1, strlen(path));
+  endpoint->handler = handler;
+
+  list_add(server->endpoints, endpoint);
+}
 
 int server_listen(HttpServer *server, char *port, void (*callback)()) {
   // consider moving to server_init && HttpServer struct
@@ -44,12 +64,44 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
       continue;
 
     Request *req = request_recieve(client_socket);
+    Response *res = response_create();
 
     printf("%s %s\n", req->method, req->path);
     fflush(stdout);
 
-    // TODO: exec corresponding callback
+    t_list_iterator *iterator = list_iterator_create(server->endpoints);
+    while (list_iterator_has_next(iterator)) {
+      Endpoint *endpoint = list_iterator_next(iterator);
+      if (strcmp(endpoint->path, req->path) == 0 &&
+          strcmp(endpoint->method, req->method) == 0) {
+        endpoint->handler(req, res);
+        break;
+      }
+    }
+
     close(client_socket);
   }
   close(fd_socket);
+}
+
+void server_get(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "GET", path, handler);
+}
+void server_post(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "POST", path, handler);
+}
+void server_put(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "PUT", path, handler);
+}
+void server_patch(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "PATCH", path, handler);
+}
+void server_delete(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "DELETE", path, handler);
+}
+void server_options(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "OPTIONS", path, handler);
+}
+void server_head(HttpServer *server, Path path, Handler handler) {
+  return server_endpoint(server, "HEAD", path, handler);
 }

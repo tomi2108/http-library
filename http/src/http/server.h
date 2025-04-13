@@ -15,18 +15,24 @@
 typedef void (*Handler)(Request *req, Response *res);
 
 typedef struct Endpoint {
-  char *pathname;
+  Path path;
   Method method;
-  Handler callback;
+  Handler handler;
 } Endpoint;
 
 typedef struct HttpServer {
-  Endpoint *endpoints;
+  t_list *endpoints;
 } HttpServer;
 
 HttpServer *server_create();
 int server_listen(HttpServer *server, char *port, void (*callback)());
-void server_endpoint(HttpServer *server, Method method, const char *path,
-                     Handler handler);
+
+void server_get(HttpServer *server, Path path, Handler handler);
+void server_post(HttpServer *server, Path path, Handler handler);
+void server_put(HttpServer *server, Path path, Handler handler);
+void server_patch(HttpServer *server, Path path, Handler handler);
+void server_delete(HttpServer *server, Path path, Handler handler);
+void server_options(HttpServer *server, Path path, Handler handler);
+void server_head(HttpServer *server, Path path, Handler handler);
 
 #endif

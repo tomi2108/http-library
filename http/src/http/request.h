@@ -7,12 +7,12 @@
 
 typedef struct Request {
   t_buffer *buffer;
-  char method[8];
-  char path[1024];
+  Method method;
+  Path path;
 } Request;
 
 Request *request_create();
 Request *request_recieve(int socket);
-void request_send(Request *req, char *path);
+void request_send(Request *req, Path path);
 
 #endif

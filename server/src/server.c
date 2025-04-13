@@ -1,12 +1,11 @@
 #include <http/server.h>
 #include <stdio.h>
 
-char *PORT = "8080";
+char *PORT = "8081";
 
 void hello_world_handler(Request *req, Response *res) {
-  printf("Hello world");
-  // should responses be created automatically by the server ??
-  res = response_create();
+  printf("Hello world\n");
+  fflush(stdout);
   res->status_code = 200;
   // should responses be SENT automatically by the server ??
   //
@@ -26,8 +25,8 @@ void server_message() {
 int main(int argc, char *argv[]) {
   HttpServer *server = server_create();
 
-  server_endpoint(server, GET, "/hello", &hello_world_handler);
-   server_listen(server, PORT, &server_message);
+  server_get(server, "/hello", &hello_world_handler);
+  server_listen(server, PORT, &server_message);
 
   return EXIT_SUCCESS;
 }
