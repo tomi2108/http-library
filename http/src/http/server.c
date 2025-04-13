@@ -85,21 +85,27 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
 void server_get(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "GET", path, handler);
 }
+
 void server_post(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "POST", path, handler);
 }
+
 void server_put(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "PUT", path, handler);
 }
+
 void server_patch(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "PATCH", path, handler);
 }
+
 void server_delete(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "DELETE", path, handler);
 }
+
 void server_options(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "OPTIONS", path, handler);
 }
+
 void server_head(HttpServer *server, Path path, Handler handler) {
   return server_endpoint(server, "HEAD", path, handler);
 }

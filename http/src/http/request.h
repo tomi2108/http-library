@@ -9,6 +9,7 @@ typedef struct Request {
   t_buffer *buffer;
   Method method;
   Path path;
+  Headers headers;
 } Request;
 
 Request *request_create();

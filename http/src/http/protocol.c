@@ -1,3 +1,52 @@
+#include "protocol.h"
+#include "list.h"
+#include <stdlib.h>
+#include <string.h>
+
+Header *header_create(char *key, char *value) {
+  Header *h = malloc(sizeof(Header));
+  if (h == NULL)
+    return NULL;
+
+  h->key = malloc(1 + strlen(key) * sizeof(char));
+  h->value = malloc(1 + strlen(value) * sizeof(char));
+
+  memset(h->key, 0, 1 + strlen(key));
+  memset(h->value, 0, 1 + strlen(value));
+
+  memcpy(h->key, key, strlen(key));
+  memcpy(h->value, value, strlen(value));
+  return h;
+}
+
+void header_destroy(Header *h) {
+  free(h->key);
+  free(h->value);
+  free(h);
+}
+
+Headers headers_create() { return list_create(); }
+void headers_destroy(Headers headers) {
+  list_destroy_and_destroy_elements(headers, (void (*)(void *))&header_destroy);
+}
+
+void headers_add(Headers h, char *key, char *value) {
+  // TODO: handle duplicates
+  Header *header = header_create(key, value);
+  list_add(h, header);
+}
+
+char *headers_get(Headers h, char *key) {
+  bool closure(void *arg) {
+    Header *header = (Header *)arg;
+    return key == header->key;
+  };
+  Header *found = list_find(h, &closure);
+  if (found == NULL)
+    return NULL;
+  return found->key;
+}
+
 char *status[600] = {
     [100] = "Continue",
     [101] = "Switching Protocols",

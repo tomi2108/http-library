@@ -13,6 +13,7 @@ extern char *status[1000];
 
 typedef struct Response {
   uint16_t status_code;
+  Headers headers;
 } Response;
 
 Response *response_create();
