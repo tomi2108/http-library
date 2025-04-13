@@ -1,8 +1,5 @@
 #include "server.h"
-#include "list.h"
-#include "protocol.h"
-#include <stdlib.h>
-#include <string.h>
+#include "response.h"
 
 HttpServer *server_create() {
   HttpServer *server = malloc(sizeof(HttpServer));
@@ -78,6 +75,7 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
         break;
       }
     }
+    response_send(res, client_socket);
 
     close(client_socket);
   }

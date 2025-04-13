@@ -44,7 +44,7 @@ int buffer_add_uint8(t_buffer *buffer, uint8_t data) {
 }
 
 int buffer_add_string(t_buffer *buffer, uint32_t length, char *string) {
-  return buffer_add(buffer, string, sizeof(char) * (length + 1));
+  return buffer_add(buffer, string, sizeof(char) * length);
 }
 
 uint32_t buffer_read_uint32(t_buffer *buffer) {

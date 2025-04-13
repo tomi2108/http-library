@@ -1,20 +1,14 @@
 #include <http/server.h>
 #include <stdio.h>
 
-char *PORT = "8081";
+char *PORT = "8080";
 
-void hello_world_handler(Request *req, Response *res) {
-  printf("Hello world\n");
-  fflush(stdout);
+void hello_world_get_handler(Request *req, Response *res) {
+  res->status_code = 503;
+}
+
+void hello_world_post_handler(Request *req, Response *res) {
   res->status_code = 200;
-  // should responses be SENT automatically by the server ??
-  //
-  // res->sendable = false by default set to true if server should send ?
-  // response_send(Response*)
-  //
-  // what if we want no response from the server, is
-  // this even a realistic use case ? maybe send it to the next middleware...
-  // provided we support middlewares someday
 }
 
 void server_message() {
@@ -25,7 +19,8 @@ void server_message() {
 int main(int argc, char *argv[]) {
   HttpServer *server = server_create();
 
-  server_get(server, "/hello", &hello_world_handler);
+  server_get(server, "/hello", &hello_world_get_handler);
+  server_post(server, "/hello", &hello_world_post_handler);
   server_listen(server, PORT, &server_message);
 
   return EXIT_SUCCESS;
