@@ -72,10 +72,10 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
       if (strcmp(endpoint->path, req->path) == 0 &&
           strcmp(endpoint->method, req->method) == 0) {
         endpoint->handler(req, res);
+        response_send(res, client_socket);
         break;
       }
     }
-    response_send(res, client_socket);
 
     close(client_socket);
   }

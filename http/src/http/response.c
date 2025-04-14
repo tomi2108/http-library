@@ -11,7 +11,7 @@ void response_send(Response *res, int socket) {
   buffer_add_string(buf, strlen(status_code), status_code);
   buffer_add_string(buf, 1, " ");
   buffer_add_string(buf, strlen(word), word);
-  buffer_add_string(buf, 4, "\r\n\r\n");
+  buffer_add_string(buf, 2, "\r\n");
 
   t_list_iterator *headers_iterator = list_iterator_create(res->headers);
   while (list_iterator_has_next(headers_iterator)) {
@@ -19,7 +19,7 @@ void response_send(Response *res, int socket) {
     buffer_add_string(buf, strlen(header->key), header->key);
     buffer_add_string(buf, 2, ": ");
     buffer_add_string(buf, strlen(header->value), header->value);
-    buffer_add_string(buf, 4, "\r\n\r\n");
+    buffer_add_string(buf, 2, "\r\n");
   }
   list_iterator_destroy(headers_iterator);
 
