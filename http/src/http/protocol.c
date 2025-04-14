@@ -1,4 +1,5 @@
 #include "protocol.h"
+#include "buffer.h"
 #include "list.h"
 #include <stdlib.h>
 #include <string.h>
@@ -45,6 +46,12 @@ char *headers_get(Headers h, char *key) {
   if (found == NULL)
     return NULL;
   return found->value;
+}
+
+Body body_create() { return buffer_create(); }
+void body_destroy(Body body) { return buffer_destroy(body); }
+void body_add_string(Body body, char *string, uint32_t length) {
+  buffer_add_string(body, length, string);
 }
 
 char *status[600] = {

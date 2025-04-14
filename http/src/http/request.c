@@ -1,18 +1,21 @@
 #include "request.h"
-#include "buffer.h"
-#include "protocol.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 void request_parse(Request *req) {
+  const char *body_separator = "\r\n\r\n";
+
   char *stream = malloc(req->buffer->size);
-  char *end_str;
   strcpy(stream, req->buffer->stream);
 
+  char *body_start = strstr(stream, body_separator);
+  body_start[0] = '\0';
+  char *body = body_start + 4;
+  body[strlen(body) - 1] = '\0';
+  body_add_string(req->body, body, strlen(body));
+
+  char *end_str;
   char *line = strtok_r(stream, "\r\n", &end_str);
+
   // TODO: Do something with version probably... ?
   char version[16] = {0};
   sscanf(line, "%7s %1023s %15s", req->method, req->path, version);
@@ -31,6 +34,7 @@ void request_parse(Request *req) {
     line = strtok_r(NULL, "\r\n", &end_str);
     free(header);
   }
+  free(stream);
 }
 
 void request_send(Request *req, Path path) {}
@@ -42,6 +46,7 @@ Request *request_create() {
 
   request->buffer = buffer_create();
   request->headers = headers_create();
+  request->body = body_create();
   return request;
 }
 

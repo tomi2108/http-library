@@ -5,11 +5,13 @@
 #include "list.h"
 #include "protocol.h"
 #include <netdb.h>
+#include <unistd.h>
 
 typedef struct Request {
   t_buffer *buffer;
   Method method;
   Path path;
+  Body body;
   Headers headers;
 } Request;
 

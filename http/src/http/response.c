@@ -1,5 +1,6 @@
 #include "response.h"
 #include "list.h"
+#include "protocol.h"
 
 void response_send(Response *res, int socket) {
   char *word = status[res->status_code];
@@ -23,6 +24,12 @@ void response_send(Response *res, int socket) {
   }
   list_iterator_destroy(headers_iterator);
 
+  if (res->body->size > 0) {
+    buffer_add_string(buf, 2, "\r\n");
+    buffer_add_string(buf, res->body->size, res->body->stream);
+    buffer_add_string(buf, 2, "\r\n");
+  }
+
   write(socket, buf->stream, buf->size);
 
   buffer_destroy(buf);
@@ -34,7 +41,14 @@ Response *response_create() {
   if (response == NULL)
     return NULL;
   response->headers = headers_create();
+  response->body = body_create();
   return response;
 }
 
-void response_destroy(Response *res) { free(res); }
+void response_destroy(Response *res) {
+  if (res->body != NULL)
+    body_destroy(res->body);
+  if (res->headers != NULL)
+    headers_destroy(res->headers);
+  free(res);
+}

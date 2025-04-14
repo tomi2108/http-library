@@ -11,9 +11,11 @@ HttpClient *client_create() {
 
 void client_destroy(HttpClient *client) { headers_destroy(client->headers); }
 
-Response *client_send(HttpClient *client, Method method, char *path) {
+Response *client_send(HttpClient *client, Method method, char *path,
+                      Body body) {
   Request *req = request_create();
   req->headers = client->headers;
+  req->body = body;
   //  req->method = method;
   request_send(req, path);
   // should open the connection first...
@@ -25,29 +27,29 @@ Response *client_send(HttpClient *client, Method method, char *path) {
 }
 
 Response *client_send_get(HttpClient *client, Path path) {
-  return client_send(client, "GET", path);
+  return client_send(client, "GET", path, NULL);
 }
 
-Response *client_send_post(HttpClient *client, Path path) {
-  return client_send(client, "POST", path);
+Response *client_send_post(HttpClient *client, Body body, Path path) {
+  return client_send(client, "POST", path, body);
 }
 
 Response *client_send_put(HttpClient *client, Path path) {
-  return client_send(client, "PUT", path);
+  return client_send(client, "PUT", path, NULL);
 }
 
 Response *client_send_patch(HttpClient *client, Path path) {
-  return client_send(client, "PATCH", path);
+  return client_send(client, "PATCH", path, NULL);
 }
 
 Response *client_send_delete(HttpClient *client, Path path) {
-  return client_send(client, "DELETE", path);
+  return client_send(client, "DELETE", path, NULL);
 }
 
 Response *client_send_options(HttpClient *client, Path path) {
-  return client_send(client, "OPTIONS", path);
+  return client_send(client, "OPTIONS", path, NULL);
 }
 
 Response *client_send_head(HttpClient *client, Path path) {
-  return client_send(client, "HEAD", path);
+  return client_send(client, "HEAD", path, NULL);
 }
