@@ -10,6 +10,7 @@ void request_parse(Request *req) {
   char *line = strtok(stream, "\r\n");
   char version[16];
   sscanf(line, "%7s %1023s %15s", req->method, req->path, version);
+  // TODO: parse headers
 }
 
 void request_send(Request *req, Path path) {}
@@ -26,6 +27,8 @@ Request *request_create() {
 Request *request_recieve(int socket) {
   Request *request = request_create();
 
+  // TODO: Using fixed sizes seems off... read RFC: 2616
+  // may need to implement a proper parser =)
   char stream[1024] = {0};
   int recieved = read(socket, stream, 1000);
   stream[recieved] = 0;

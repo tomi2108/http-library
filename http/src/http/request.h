@@ -2,6 +2,7 @@
 #define REQUEST_H_
 
 #include "buffer.h"
+#include "list.h"
 #include "protocol.h"
 #include <netdb.h>
 

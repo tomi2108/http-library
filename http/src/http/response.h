@@ -1,6 +1,7 @@
 #ifndef RESPONSE_H_
 #define RESPONSE_H_
 
+#include "defer.h"
 #include "buffer.h"
 #include "protocol.h"
 #include <netdb.h>

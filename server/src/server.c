@@ -1,4 +1,4 @@
-#include "http/protocol.h"
+#include <http/protocol.h>
 #include <http/server.h>
 #include <stdio.h>
 
@@ -11,7 +11,6 @@ void hello_world_get_handler(Request *req, Response *res) {
 void hello_world_post_handler(Request *req, Response *res) {
   res->status_code = 200;
   headers_add(res->headers, "Content-Type", "text/html; charset=utf-8");
-
 }
 
 void server_message() {

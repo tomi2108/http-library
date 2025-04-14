@@ -37,14 +37,14 @@ void headers_add(Headers h, char *key, char *value) {
 }
 
 char *headers_get(Headers h, char *key) {
-  bool closure(void *arg) {
+  auto bool closure(void *arg) {
     Header *header = (Header *)arg;
-    return key == header->key;
+    return strcmp(key, header->key) == 0;
   };
   Header *found = list_find(h, &closure);
   if (found == NULL)
     return NULL;
-  return found->key;
+  return found->value;
 }
 
 char *status[600] = {
