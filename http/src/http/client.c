@@ -34,11 +34,6 @@ Response *client_send(HttpClient *client, Method method, char *url, Body body) {
   strcpy(req->method, method);
   strcpy(req->path, path);
 
-  // should open the connection first...
-  //
-  // maybe it is not the best to create the response here
-  // client_wait or smth... ??
-
   // Consider  moving this to HttpClient client_create
   struct addrinfo hints;
   struct addrinfo *server_info;
