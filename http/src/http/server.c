@@ -76,7 +76,6 @@ int server_listen(HttpServer *server, char *port, void (*callback)()) {
         break;
       }
     }
-
     close(client_socket);
   }
   close(fd_socket);

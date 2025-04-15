@@ -2,6 +2,46 @@
 #include "list.h"
 #include "protocol.h"
 
+void response_parse(Response *res) {
+  const char *body_separator = "\r\n\r\n";
+
+  char *stream = malloc(res->buffer->size);
+  strcpy(stream, res->buffer->stream);
+
+  char *body_start = strstr(stream, body_separator);
+  body_start[0] = '\0';
+  char *body = body_start + 4;
+  body[strlen(body) - 1] = '\0';
+  body_add_string(res->body, body, strlen(body));
+
+  char *end_str;
+  char *line = strtok_r(stream, "\r\n", &end_str);
+
+  // TODO: Do something with version probably... ?
+  char version[16] = {0};
+  char word[16] = {0};
+
+  char status[16] = {0};
+  sscanf(line, "%10s %10s %15s", version, status, word);
+  res->status_code = atoi(status);
+
+  line = strtok_r(NULL, "\r\n", &end_str);
+  while (line != NULL) {
+    char *end_token;
+    char *header = malloc(strlen(line) + 1);
+    strcpy(header, line);
+    char *key = strtok_r(header, ":", &end_token);
+    char *value = strtok_r(NULL, "", &end_token);
+    if (value[0] == ' ')
+      value = &value[1];
+
+    headers_add(res->headers, key, value);
+    line = strtok_r(NULL, "\r\n", &end_str);
+    free(header);
+  }
+  free(stream);
+};
+
 void response_send(Response *res, int socket) {
   char *word = status[res->status_code];
   char status_code[4] = {0};
@@ -36,10 +76,26 @@ void response_send(Response *res, int socket) {
   response_destroy(res);
 }
 
+Response *response_recieve(int socket) {
+  Response *response = response_create();
+
+  // TODO: Using fixed sizes seems off... read RFC: 2616
+  // may need to implement a proper parser =)
+  char stream[1024] = {0};
+  int recieved = recv(socket, stream, 1000, MSG_WAITALL);
+  stream[recieved] = 0;
+  buffer_add_string(response->buffer, recieved, stream);
+
+  response_parse(response);
+  return response;
+};
+
 Response *response_create() {
   Response *response = malloc(sizeof(Response));
   if (response == NULL)
     return NULL;
+
+  response->buffer = buffer_create();
   response->headers = headers_create();
   response->body = body_create();
   return response;

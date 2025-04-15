@@ -4,6 +4,7 @@
 #include "buffer.h"
 #include "list.h"
 #include "protocol.h"
+#include "response.h"
 #include <netdb.h>
 #include <unistd.h>
 
@@ -16,7 +17,9 @@ typedef struct Request {
 } Request;
 
 Request *request_create();
+void request_destroy(Request *request);
+
+Response *request_send(Request *req, int socket);
 Request *request_recieve(int socket);
-void request_send(Request *req, Path path);
 
 #endif

@@ -1,5 +1,15 @@
 #include "request.h"
+#include "response.h"
+#include <stdio.h>
 #include <string.h>
+
+void request_destroy(Request *request) {
+  buffer_destroy(request->buffer);
+  // should probably free headers but client could reuse them as well...
+  if (request->body)
+    body_destroy(request->body);
+  free(request);
+}
 
 void request_parse(Request *req) {
   const char *body_separator = "\r\n\r\n";
@@ -37,8 +47,6 @@ void request_parse(Request *req) {
   free(stream);
 }
 
-void request_send(Request *req, Path path) {}
-
 Request *request_create() {
   Request *request = malloc(sizeof(Request));
   if (request == NULL)
@@ -62,4 +70,39 @@ Request *request_recieve(int socket) {
 
   request_parse(request);
   return request;
+}
+
+Response *request_send(Request *req, int socket) {
+  t_buffer *buf = buffer_create();
+  buffer_add_string(buf, strlen(req->method), req->method);
+  buffer_add_string(buf, 1, " ");
+  buffer_add_string(buf, strlen(req->path), req->path);
+  buffer_add_string(buf, 9, " HTTP/1.1");
+  buffer_add_string(buf, 2, "\r\n");
+
+  t_list_iterator *headers_iterator = list_iterator_create(req->headers);
+  while (list_iterator_has_next(headers_iterator)) {
+    Header *header = list_iterator_next(headers_iterator);
+    buffer_add_string(buf, strlen(header->key), header->key);
+    buffer_add_string(buf, 2, ": ");
+    buffer_add_string(buf, strlen(header->value), header->value);
+    buffer_add_string(buf, 2, "\r\n");
+  }
+  list_iterator_destroy(headers_iterator);
+
+  if (req->body && strlen(req->body->stream) > 0) {
+    buffer_add_string(buf, 2, "\r\n");
+    buffer_add_string(buf, req->body->size, req->body->stream);
+    buffer_add_string(buf, 2, "\r\n");
+  }
+
+  buffer_add_string(buf, 2, "\r\n");
+
+  printf("%s", buf->stream);
+  write(socket, buf->stream, buf->size);
+
+  buffer_destroy(buf);
+  request_destroy(req);
+  Response *res = response_recieve(socket);
+  return res;
 }

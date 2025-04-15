@@ -12,13 +12,16 @@
 extern char *status[1000];
 
 typedef struct Response {
+  t_buffer *buffer;
   uint16_t status_code;
   Headers headers;
   Body body;
 } Response;
 
 Response *response_create();
-void response_send(Response *res, int socket);
 void response_destroy(Response *res);
+
+void response_send(Response *res, int socket);
+Response *response_recieve(int socket);
 
 #endif
